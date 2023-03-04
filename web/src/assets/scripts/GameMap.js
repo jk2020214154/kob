@@ -18,6 +18,22 @@ export class GameMap extends AcGameObject{
 
     }
 
+    
+
+    check_connectivity(g,sx,sy,tx,ty){//检查连通性
+        if(sx==tx&&sy==ty)
+            return true;
+        g[sx][sy]=true;
+
+        let dirx=[-1,0,1,0],diry=[0,1,0,-1];
+        for(let i=0;i<=3;i++){
+            let dx=sx+dirx[i],dy=sy+diry[i];
+            if(!g[dx][dy]&&this.check_connectivity(g,dx,dy,tx,ty))
+                return true;
+        }
+        return false;
+    }
+
     create_walls(){
         const g=[];
         for(let r=0;r<this.rows;r++){
@@ -51,6 +67,9 @@ export class GameMap extends AcGameObject{
                 break;
             }
         }
+        const copy_g=JSON.parse(JSON.stringify(g));
+        if(!this.check_connectivity(copy_g,this.rows-2,1,1,this.cols-2))
+            return false;
 
         for(let r=0;r<this.rows;r++){
             for(let c=0;c<this.cols;c++){
@@ -59,10 +78,14 @@ export class GameMap extends AcGameObject{
                 }
             }
         }
+        return true;
     }
 
     start(){
-        this.create_walls();
+        for(let i=0;i<1000;i++){
+            if(this.create_walls())
+                break;
+        }
     }
 
     update_size(){
