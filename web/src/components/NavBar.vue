@@ -22,7 +22,7 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {{$store.state.user.username}}
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" style="margin: 0">
                         <li>
                             <router-link class="dropdown-item" :to="{name: 'user_bot_index'}">我的Bot</router-link>
                         </li>
