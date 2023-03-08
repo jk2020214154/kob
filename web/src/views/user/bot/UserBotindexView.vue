@@ -35,12 +35,22 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-bot-code" class="form-label">代码</label>
-                                        <VAceEditor
-                                            v-model:value="botadd.content"
-                                            @init="editorInit"
-                                            lang="c_cpp"
-                                            theme="textmate"
-                                            style="height: 300px" />
+                                            <VAceEditor
+                                                v-model:value="botadd.content"
+                                                lang="c_cpp"
+                                                theme="textmate"
+                                                style="height: 300px"
+                                                :options="{
+                                                enableBasicAutocompletion: true, //启用基本自动完成
+                                                enableSnippets: true, // 启用代码段
+                                                enableLiveAutocompletion: true, // 启用实时自动完成
+                                                fontSize: 14, //设置字号
+                                                tabSize: 2, // 标签大小
+                                                showPrintMargin: false, //去除编辑器里的竖线
+                                                highlightActiveLine: true,
+                                                }"
+                                            />
+
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -87,11 +97,22 @@
                                                 <div class="mb-3">
                                                     <label for="add-bot-code" class="form-label">代码</label>
                                                     <VAceEditor
-                                                        v-model:value="bot.content"
-                                                        @init="editorInit"
-                                                        lang="c_cpp"
-                                                        theme="textmate"
-                                                        style="height: 300px" />
+                                                                v-model:value="bot.content"
+                                                                lang="c_cpp"
+                                                                theme="textmate"
+                                                                style="height: 300px"
+                                                                :options="{
+                                                                enableBasicAutocompletion: true, //启用基本自动完成
+                                                                enableSnippets: true, // 启用代码段
+                                                                enableLiveAutocompletion: true, // 启用实时自动完成
+                                                                fontSize: 14, //设置字号
+                                                                tabSize: 2, // 标签大小
+                                                                showPrintMargin: false, //去除编辑器里的竖线
+                                                                highlightActiveLine: true,
+                                                                }"
+                                                        />
+
+
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -128,6 +149,10 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.min.js';
 import { VAceEditor } from 'vue3-ace-editor';
 import ace from 'ace-builds';
 
+import 'ace-builds/src-noconflict/mode-json';
+import 'ace-builds/src-noconflict/theme-chrome';
+import 'ace-builds/src-noconflict/ext-language_tools';
+
 
 
 export default {
@@ -147,9 +172,11 @@ export default {
         error_message: "",
     });
 
-    ace.config.set(
-    "basePath", 
-    "https://cdn.jsdelivr.net/npm/ace-builds@" + require('ace-builds').version + "/src-noconflict/");
+        ace.config.set(
+            "basePath",
+            "https://cdn.jsdelivr.net/npm/ace-builds@" + require('ace-builds').version + "/src-noconflict/")
+
+
 
     const refresh_bots=()=>{
         $.ajax({
