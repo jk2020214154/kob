@@ -69,7 +69,7 @@ div.matchground{
     width: 60vw;
     height: 70vh;
     margin: 40px auto;
-    background-color: rgb(50,50,50,0.5);
+    background-color: rgba(50,50,50,0.5);
 }
 
 div.user-photo{
