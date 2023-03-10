@@ -26,8 +26,11 @@ export default{
         const jwt_token=localStorage.getItem('jwt-token');
         const socketUrl=`ws://127.0.0.1:3000/websocket/${jwt_token}/`;
 
+        
+
         let socket=null;
         onMounted(()=>{
+            store.commit("updateLoser","none");
             store.commit("updateOpponent",{
                 username: "我的对手",
                 photo: "https://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png",
@@ -47,7 +50,7 @@ export default{
                     });
                     setTimeout(() => {
                         store.commit("updateStatus","playing");
-                    }, 500);
+                    }, 200);
                     store.commit("updateGame",data.game);
                 }
                 else if(data.event==="move"){

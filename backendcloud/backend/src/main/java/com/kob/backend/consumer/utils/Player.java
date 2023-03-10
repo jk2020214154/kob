@@ -12,6 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Player {
     private Integer id;
+
+    private Integer botId;//-1表示亲自上阵，否则用AI打
+
+    private String botCode;
     private Integer sx;
     private Integer sy;
 
