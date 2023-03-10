@@ -30,6 +30,7 @@ export default{
 
         let socket=null;
         onMounted(()=>{
+            store.commit("updateIsRecord",false);
             store.commit("updateLoser","none");
             store.commit("updateOpponent",{
                 username: "我的对手",
