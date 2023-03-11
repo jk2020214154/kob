@@ -70,7 +70,7 @@ export default{
 
         const refresh_bots=()=>{
             $.ajax({
-                url: "http://127.0.0.1:3000/user/bot/getlist/",
+                url: "https://app3677.acapp.acwing.com.cn/api/user/bot/getlist/",
                 type: "get",
                 headers: {
                 // Authorization:"Bearer "+"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJiNTg4ZmFiNWE4MjA0YmRkYWY1ZGY0NzU2YmI4ZGMyMiIsInN1YiI6IjEiLCJpc3MiOiJzZyIsImlhdCI6MTY2NTgwNjA0NiwiZXhwIjoxNjY3MDE1NjQ2fQ.2IJAoNjjdecGX34WIAZhUqBAVrI9-UjzeRil3iXvp6w",

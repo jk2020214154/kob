@@ -3,6 +3,9 @@
     <PlayGround v-if="$store.state.pk.status === 'playing'" />
     <MatchGround v-if="$store.state.pk.status === 'matching'" />
     <ResultBoard v-if="$store.state.pk.loser!=='none' " />
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id)=== parseInt($store.state.pk.a_id)">左下角</div>
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id)=== parseInt($store.state.pk.b_id)">右上角</div>
+
 </template>
 
 <script>
@@ -24,7 +27,7 @@ export default{
         
         const store=useStore();
         const jwt_token=localStorage.getItem('jwt-token');
-        const socketUrl=`ws://127.0.0.1:3000/websocket/${jwt_token}/`;
+        const socketUrl=`wss://app3677.acapp.acwing.com.cn/websocket/${jwt_token}/`;
 
         
 
@@ -98,5 +101,12 @@ export default{
 
 
 <style scoped>
+
+div.user-color{
+    text-align: center;
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+}
 
 </style>
