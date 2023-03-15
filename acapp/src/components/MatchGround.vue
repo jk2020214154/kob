@@ -80,8 +80,6 @@ export default{
                 },
                 success(resp) {
                     bots.value=resp;
-                    //console.log(jwt_token);
-                    //console.log(store.state.user.user_token);
                 },
             });
         }

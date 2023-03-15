@@ -1,42 +1,83 @@
 <template>
 <ContentField>
-    <div class="container">
-        <div class="row">
-            <div class="col-3">
-                <div class="card" style="margin-top:20px">
-                    <div class="card-body">
-                        <img :src="$store.state.user.photo" alt="" style="width: 100%">
+    <div class="game-table">
+        <div>
+            <span style="font-size: 130%">我的Bot</span>
+            
+            <button type="button" style="float:right;" @click="show_add_modal_handler(true)">
+                创建Bot
+            </button>
+            <div class="game-modal" id="add-bot-btn" tabindex="-1" v-if="show_add_modal">
+                <div>
+                    <h5 style="margin: 2px;">创建Bot</h5>
+                </div>
+                <div>
+                    <div>
+                        <label for="add-bot-title">名称</label>
+                        <input style="width:85%" v-model="botadd.title" type="text" id="add-bot-title" placeholder="请输入Bot名称">
+                    </div>
+                    <div>
+                        <label for="add-bot-description" >简介</label>
+                        <textarea style="width:85%; margin-top:10px;" v-model="botadd.description" id="add-bot-description" rows="3" placeholder="请输入Bot简介"></textarea>
+                    </div>
+                    <div>
+                        <label for="add-bot-code">代码</label>
+                            <VAceEditor
+                                v-model:value="botadd.content"
+                                lang="c_cpp"
+                                theme="textmate"
+                                style="height: 300px"
+                                :options="{
+                                    enableBasicAutocompletion: true, //启用基本自动完成
+                                    enableSnippets: true, // 启用代码段
+                                    enableLiveAutocompletion: true, // 启用实时自动完成
+                                    fontSize: 14, //设置字号
+                                    tabSize: 2, // 标签大小
+                                    showPrintMargin: false, //去除编辑器里的竖线
+                                    highlightActiveLine: true,
+                                }"
+                            />
+
                     </div>
                 </div>
-            </div>
-            <div class="col-9">
-                <div class="card" style="margin-top:20px">
-                    <div class="card-header">
-                        <span style="font-size: 130%">我的Bot</span>
-                        
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-bot-btn">
-                            创建Bot
-                        </button>
-                        <div class="modal fade" id="add-bot-btn" tabindex="-1" >
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" >创建Bot</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div>
+                    <div class="error_message">{{botadd.error_message}}</div>
+                    <button type="button" @click="add_bot">创建</button>
+                    <button type="button" @click="show_add_modal_handler(false)">取消</button>
+                </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="bot in bots" :key="bot.id">
+                    <td>{{bot.title}}</td>
+                    <td>{{bot.createtime}}</td>
+                    <td>
+                        <button type="button" style="margin-right:10px" @click="show_update_modal_handler(bot.id,true)">修改</button>
+                        <div class="game-modal" :id="'update-bot-modal-' + bot.id" tabindex="-1" v-if="bot.show_update_modal">
+                                <div>
+                                    <h5 style="margin: 2px;">修改Bot</h5>
+                                </div>
+                                <div>
+                                    <div>
+                                        <label style="width:85%" for="add-bot-title">名称</label>
+                                        <input v-model="bot.title" type="text"  id="add-bot-title" placeholder="请输入Bot名称">
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="add-bot-title" class="form-label">名称</label>
-                                            <input v-model="botadd.title" type="text" class="form-control" id="add-bot-title" placeholder="请输入Bot名称">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="add-bot-description" class="form-label">简介</label>
-                                            <textarea v-model="botadd.description" class="form-control" id="add-bot-description" rows="3" placeholder="请输入Bot简介"></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="add-bot-code" class="form-label">代码</label>
-                                                <VAceEditor
-                                                    v-model:value="botadd.content"
+                                    <div>
+                                        <label style="width:85% margin-top: 10px;" for="add-bot-description">简介</label>
+                                        <textarea v-model="bot.description"  id="add-bot-description" rows="3" placeholder="请输入Bot简介"></textarea>
+                                    </div>
+                                    <div>
+                                        <label for="add-bot-code">代码</label>
+                                        <VAceEditor
+                                                    v-model:value="bot.content"
                                                     lang="c_cpp"
                                                     theme="textmate"
                                                     style="height: 300px"
@@ -49,89 +90,23 @@
                                                     showPrintMargin: false, //去除编辑器里的竖线
                                                     highlightActiveLine: true,
                                                     }"
-                                                />
+                                            />
 
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <div class="error_message">{{botadd.error_message}}</div>
-                                        <button type="button" class="btn btn-primary" @click="add_bot">创建</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+
                                     </div>
                                 </div>
-                            </div>
+                                <div>
+                                    <div class="error_message">{{ bot.error_message }}</div>
+                                    <button type="button" @click="update_bot(bot)">保存修改</button>
+                                    <button type="button" @click="show_update_modal_handler(bot.id,false)">取消</button>
+                                </div>
                         </div>
 
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>名称</th>
-                                    <th>创建时间</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="bot in bots" :key="bot.id">
-                                    <td>{{bot.title}}</td>
-                                    <td>{{bot.createtime}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-secondary" style="margin-right:10px" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-' + bot.id">修改</button>
-                                        <div class="modal fade" :id="'update-bot-modal-' + bot.id" tabindex="-1">
-                                            <div class="modal-dialog modal-xl">
-                                                <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">修改Bot</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="add-bot-title" class="form-label">名称</label>
-                                                        <input v-model="bot.title" type="text" class="form-control" id="add-bot-title" placeholder="请输入Bot名称">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="add-bot-description" class="form-label">简介</label>
-                                                        <textarea v-model="bot.description" class="form-control" id="add-bot-description" rows="3" placeholder="请输入Bot简介"></textarea>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="add-bot-code" class="form-label">代码</label>
-                                                        <VAceEditor
-                                                                    v-model:value="bot.content"
-                                                                    lang="c_cpp"
-                                                                    theme="textmate"
-                                                                    style="height: 300px"
-                                                                    :options="{
-                                                                    enableBasicAutocompletion: true, //启用基本自动完成
-                                                                    enableSnippets: true, // 启用代码段
-                                                                    enableLiveAutocompletion: true, // 启用实时自动完成
-                                                                    fontSize: 14, //设置字号
-                                                                    tabSize: 2, // 标签大小
-                                                                    showPrintMargin: false, //去除编辑器里的竖线
-                                                                    highlightActiveLine: true,
-                                                                    }"
-                                                            />
-
-
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <div class="error_message">{{ bot.error_message }}</div>
-                                                    <button type="button" class="btn btn-primary" @click="update_bot(bot)">保存修改</button>
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                                                </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <button type="button" class="btn btn-danger" @click='remove_bot(bot)'>删除</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                        <button type="button" @click='remove_bot(bot)'>删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         </div>
     </div>
 </ContentField>
@@ -144,7 +119,6 @@ import $ from 'jquery'
 
 
 import {ref,reactive} from 'vue';
-import { Modal } from 'bootstrap/dist/js/bootstrap.min.js';
 
 import { VAceEditor } from 'vue3-ace-editor';
 import ace from 'ace-builds';
@@ -166,6 +140,7 @@ export default {
     setup() {
         //const store = useStore();
     let bots=ref([]);
+    let show_add_modal=ref(false);
     const jwt_token=localStorage.getItem("jwt-token");
 
     const botadd=reactive({
@@ -191,9 +166,10 @@ export default {
             //Authorization:"Bearer "+ store.state.user.token,//不知道为什么不行
             },
             success(resp) {
+                for(const bot of resp){
+                    bot.show_update_modal=false;
+                }
                 bots.value=resp;
-                //console.log(jwt_token);
-                //console.log(store.state.user.user_token);
             },
         });
     }
@@ -220,7 +196,7 @@ export default {
                     botadd.title="";
                     botadd.description="";
                     botadd.content="";
-                    Modal.getInstance("#add-bot-btn").hide();
+                    show_add_modal.value=false;
                     refresh_bots();
                 }
                 else{
@@ -244,7 +220,6 @@ export default {
                 bot_id: bot.id,
             },
             success(resp) {
-                //console.log(resp);
                 if(resp.error_message==="success"){
                     refresh_bots();
                 }
@@ -270,7 +245,6 @@ export default {
             },
             success(resp) {
                 if(resp.error_message==="success"){
-                    Modal.getInstance('#update-bot-modal-' + bot.id).hide();
                     refresh_bots();
                 }
                 else{
@@ -280,6 +254,20 @@ export default {
         });
     }
 
+    const show_add_modal_handler=is_show=>{
+        show_add_modal.value=is_show;
+    }
+
+    const show_update_modal_handler=(bot_id,is_show)=>{
+        const new_bots=[];
+        for(const bot of bots.value){
+            if(bot.id===bot_id){
+                bot.show_update_modal=is_show;
+            }
+            new_bots.push(bot);
+        }
+        bots.value=new_bots;
+    }
 
 
     return{
@@ -288,6 +276,9 @@ export default {
         add_bot,
         remove_bot,
         update_bot,
+        show_add_modal,
+        show_add_modal_handler,
+        show_update_modal_handler,
     }
 }
 
@@ -296,8 +287,44 @@ export default {
 
 <style scoped> 
 
-div.error_message{
+div.error-message {
     color: red;
+}
+div.game-table {
+    display: flex;
+    justify-content: center;
+    padding-top: 5vh;
+    width: 100%;
+    height: calc(100% - 5vh);
+}
+div.game-table table {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+}
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 12vw;
+    max-width: 12vw;
+    text-align: center;
+}
+th {
+    text-align: center;
+}
+.game-modal {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    width: 40vw;
+    height: 55vh;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    text-align: left;
 }
 
 </style>

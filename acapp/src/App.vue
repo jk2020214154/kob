@@ -7,7 +7,6 @@
       <RanklistindexViewVue v-else-if="$store.state.router.router_name==='ranklist'"/>
       <UserBotindexViewVue v-else-if="$store.state.router.router_name==='user_bot'"/>
     </div>
-
 </template>
 
 
