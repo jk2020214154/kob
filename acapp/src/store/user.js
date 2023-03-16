@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 export default{
     state: {
+        AcWingOS: "AcwingOS",
         id: "",
         username: "",
         photo: "",
@@ -64,6 +65,8 @@ export default{
                   Authorization: "Bearer " + context.state.token,
                 },
                 success(resp){
+                    console.log(context.state.token);
+                    console.log(resp);
                     if(resp.error_message==="success"){
                         context.commit("updateUser",{
                             ...resp,

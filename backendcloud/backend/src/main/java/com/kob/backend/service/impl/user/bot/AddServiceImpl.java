@@ -23,50 +23,50 @@ public class AddServiceImpl implements AddService {
 
     @Override
     public Map<String, String> add(Map<String, String> data) {
-        UsernamePasswordAuthenticationToken authenticationToken=
+        UsernamePasswordAuthenticationToken authenticationToken =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl loginUser=(UserDetailsImpl)authenticationToken.getPrincipal();
-        User user=loginUser.getUser();
+        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
+        User user = loginUser.getUser();
 
-        String title=data.get("title");
-        String description=data.get("description");
-        String content=data.get("content");
+        String title = data.get("title");
+        String description = data.get("description");
+        String content = data.get("content");
 
-        Map<String,String> map=new HashMap<>();
+        Map<String, String> map = new HashMap<>();
 
-        if(title==null||title.length()==0){
-            map.put("error_message","标题不能为空");
+        if (title == null || title.length() == 0) {
+            map.put("error_message", "标题不能为空");
             return map;
         }
 
-        if(title.length()>100){
-            map.put("error_message","标题长度不能大于100");
+        if (title.length() > 100) {
+            map.put("error_message", "标题长度不能大于100");
             return map;
         }
 
-        if(description==null||description.length()==0){
-            description="这个用户很懒，什么也没留下~";
+        if (description == null || description.length() == 0) {
+            description = "这个用户很懒，什么也没留下~";
         }
 
-        if(description.length()>300){
-            map.put("error_message","Bot描述的长度不能大于300");
+        if (description.length() > 300) {
+            map.put("error_message", "Bot描述的长度不能大于300");
             return map;
         }
 
-        if(content==null||content.length()==0){
-            map.put("error_message","代码不能为空");
+        if (content == null || content.length() == 0) {
+            map.put("error_message", "代码不能为空");
             return map;
         }
 
-        if(content.length()>10000){
-            map.put("error_message","代码长度不能超过10000");
+        if (content.length() > 10000) {
+            map.put("error_message", "代码长度不能超过10000");
             return map;
         }
 
-        QueryWrapper<Bot> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("user_id",user.getId());
-        if(botMapper.selectCount(queryWrapper)>=10){
-            map.put("error_message","每个用户最多只能创建10个Bot!");
+        QueryWrapper<Bot> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", user.getId());
+        if (botMapper.selectCount(queryWrapper) >= 10) {
+            map.put("error_message", "每个用户最多只能创建10个Bot！");
             return map;
         }
 
@@ -77,6 +77,5 @@ public class AddServiceImpl implements AddService {
         map.put("error_message", "success");
 
         return map;
-
     }
 }

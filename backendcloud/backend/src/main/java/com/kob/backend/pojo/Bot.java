@@ -1,6 +1,5 @@
 package com.kob.backend.pojo;
 
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bot {
-    @TableId(type = IdType.AUTO )
+    @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer userId;
     private String title;

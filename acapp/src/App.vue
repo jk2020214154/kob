@@ -13,14 +13,14 @@
 <script>
 import {useStore} from 'vuex';
 import MenuView from './views/MenuView.vue';
-import PkindexViewVue from './views/pk/PkindexView.vue';
-import RecordindexViewVue from './views/record/RecordindexView.vue';
-import RecordContentViewVue from './views/record/RecordContentView.vue';
-import RanklistindexViewVue from './views/ranklist/RanklistindexView.vue';
-import UserBotindexViewVue from './views/user/bot/UserBotindexView.vue';
+import PkindexViewVue from './views/pk/PkindexView';
+import RecordindexViewVue from './views/record/RecordindexView';
+import RecordContentViewVue from './views/record/RecordContentView';
+import RanklistindexViewVue from './views/ranklist/RanklistindexView';
+import UserBotindexViewVue from './views/user/bot/UserBotindexView';
 
 
-//import $ from 'jquery';
+import $ from 'jquery';
 
 
 export default{
@@ -34,23 +34,40 @@ export default{
   },
   setup(){
 
+    
+
       const store = useStore();
-      const jwt_token="eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0MjY2MzUyNTAzMTI0MGQwOTQ5NGMwM2FmY2JmMWIxZSIsInN1YiI6IjIiLCJpc3MiOiJzZyIsImlhdCI6MTY3ODUyODQ3MSwiZXhwIjoxNjc5NzM4MDcxfQ.AkbIgMp4qz0AMcUSpq15N_NJD1WmeepQF6_sTOCdwqY";
-      
-      if(jwt_token){
-          store.commit("updateToken",jwt_token);
-          store.dispatch("getinfo",{
-              success(){
-                  store.commit("updatePullingInfo",false);
-              },
-              error(){
-                  store.commit("updatePullingInfo",false);
+
+      $.ajax({
+        url:"https://app3677.acapp.acwing.com.cn/api/user/account/acwing/acapp/apply_code/",
+        type: "GET",
+        success: resp => {
+          if (resp.result === "success") {
+            store.state.user.AcWingOS.api.oauth2.authorize(resp.appid, resp.redirect_uri, resp.scope, resp.state, resp => {
+              if (resp.result === "success") {
+                const jwt_token = resp.jwt_token;
+                
+                store.commit("updateToken", jwt_token);
+                store.dispatch("getinfo", {
+                    success() {
+                        store.commit("updatePullingInfo", false);
+                    },
+                    error() {
+                        store.commit("updatePullingInfo", false);
+                    }
+                })
+              } else {
+                store.state.user.AcWingOS.api.window.close();
               }
-          });
-      }
-      else{
-          store.commit("updatePullingInfo",false);
-      }
+            });
+          } else {
+            store.state.user.AcWingOS.api.window.close();
+          }
+        }
+      });
+
+
+
   },
 }
 

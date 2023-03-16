@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Record {
-    @TableId(type = IdType.AUTO )
+    @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer aId;
     private Integer aSx;
@@ -23,12 +23,8 @@ public class Record {
     private Integer bSy;
     private String aSteps;
     private String bSteps;
-
     private String map;
-
     private String loser;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createtime;
-
-
 }
